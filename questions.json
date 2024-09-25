@@ -1,0 +1,23 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "How satisfied are you with our service?",
+      "options": [
+        { "id": 1, "text": "Very Satisfied" },
+        { "id": 2, "text": "Satisfied" },
+        { "id": 3, "text": "Neutral" },
+        { "id": 4, "text": "Dissatisfied" },
+        { "id": 5, "text": "Very Dissatisfied" }
+      ]
+    },
+    {
+      "id": 2,
+      "question": "Would you recommend us to others?",
+      "options": [
+        { "id": 1, "text": "Yes" },
+        { "id": 2, "text": "No" }
+      ]
+    }
+  ]
+}

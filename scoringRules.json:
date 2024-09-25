@@ -1,0 +1,11 @@
+{
+  "rules": [
+    { "questionId": 1, "optionId": 1, "score": 5 },
+    { "questionId": 1, "optionId": 2, "score": 4 },
+    { "questionId": 1, "optionId": 3, "score": 3 },
+    { "questionId": 1, "optionId": 4, "score": 2 },
+    { "questionId": 1, "optionId": 5, "score": 1 },
+    { "questionId": 2, "optionId": 1, "score": 5 },
+    { "questionId": 2, "optionId": 2, "score": 0 }
+  ]
+}
