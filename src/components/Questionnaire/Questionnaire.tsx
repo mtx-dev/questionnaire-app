@@ -10,17 +10,24 @@ import {
 import questionsData from "../../../MultilingualCareerQuestionnaire.json"; // Load questions data
 import scoring from "../../../UpdatedMVPScoringSystem.json";
 import Question from "./Question";
-import { QuestionResponseType, QuestionsData } from "../../types";
+import { QuestionMultilanguageComparisonResponseType, QuestionResponseType, QuestionsData } from "../../types";
+
 const questions = (questionsData as unknown as QuestionsData).questions;
 
-const Questionnaire: React.FC = () => {
+type ScoreType = {
+  data_analyst: number;
+  software_developer: number;
+  project_manager: number;
+  ux_ui_designer: number;
+};
 
+const Questionnaire: React.FC = () => {
   const [responses, setResponses] = useState<{
     [key: string]: QuestionResponseType;
   }>({});
   const maxSteps = questions.length;
 
-  const [score, setScore] = useState(null);
+  const [score, setScore] = useState<[string, number][] | null>(null);
   const [step, setStep] = useState<number>(0);
   const handleResponseChange = (
     questionId: string,
@@ -35,32 +42,34 @@ const Questionnaire: React.FC = () => {
     if (step > 0) setStep(step - 1);
   };
   const calculateScore = () => {
-    console.log("User responses:", responses);
-    console.log("scoring", scoring.scoring);
 
-    const s = scoring.scoring;
-    const res = [];
+    const scoringData = scoring.scoring;
+    const res: ScoreType[] = [];
     Object.keys(responses).forEach((questionId) => {
-      const qres = s[questionId]?.[responses[questionId]];
-      console.log("s[questionId]", questionId, qres);
-
+      const answerVariants = scoringData[questionId as keyof typeof scoringData];
+      const key = responses[questionId] as string;
+      const qres = answerVariants?.[key as keyof typeof answerVariants] as ScoreType;
       if (qres) res.push(qres);
     });
     Object.keys(responses.comparison_pairs).forEach((pairId) => {
-      const qres =
-        s.comparison_pairs[pairId]?.[responses.comparison_pairs?.[pairId]];
-      console.log("s[questionId]", pairId, qres);
+      const answerVariants = scoringData.comparison_pairs[pairId as keyof typeof scoringData.comparison_pairs];
+      const key = (responses.comparison_pairs as QuestionMultilanguageComparisonResponseType)[pairId];
+      const qres = answerVariants?.[key as keyof typeof answerVariants];
 
-      if (qres) res.push(qres);
+      if (qres) res.push(qres as ScoreType);
     });
     const careerPaths = Object.keys(res[0]);
-    const scoreRes = {};
-    careerPaths.forEach((path) => {
-      scoreRes[path] = 0;
-    });
+    const scoreRes: ScoreType = {
+      data_analyst: 0,
+      software_developer: 0,
+      project_manager: 0,
+      ux_ui_designer: 0,
+    };
+
     res.forEach((item) => {
       careerPaths.forEach((path) => {
-        scoreRes[path] = scoreRes[path] + item[path];
+        scoreRes[path as keyof ScoreType] =
+          scoreRes[path as keyof ScoreType] + item[path as keyof ScoreType];
       });
     });
     const sortedResults = Object.entries(scoreRes).sort((a, b) => b[1] - a[1]);
